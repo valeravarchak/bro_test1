@@ -13,6 +13,9 @@ var buttonPlusRow = document.getElementsByClassName("plus_row")[0];
 // Кнопка добавления колонки
 var buttonPlusCol = document.getElementsByClassName("plus_col")[0];
 
+// Блок сontent
+var content = document.getElementsByClassName("content")[0];
+
 // Индекс колонки
 var indexCol;
 
@@ -24,6 +27,10 @@ var countOfRows;
 
 // Количество ячеек в строчке
 var countChildElement;
+
+var countChildElemen;
+
+var offsetLef;
 
 
 // При загрузке страницы создаёт таблицу 4х4
@@ -43,13 +50,16 @@ document.onmouseover = function (event) {
 
     var target = event.target;
 
-// Количество строк
+    // Количество строк
     countOfRows = mainTable.getElementsByTagName('tr').length;
 
-// Количество ячеек в строке
+    // Количество ячеек в строке
     countChildElement = mainTable.getElementsByTagName('tr')[0].getElementsByTagName('td').length;
 
-// Движение кнопок удаления
+
+
+
+    // Движение кнопок удаления
     if (target.tagName != 'TD') return;
 
     indexCol = target.cellIndex;
@@ -61,7 +71,13 @@ document.onmouseover = function (event) {
     buttonMinusCol.style.left = offLeft + 'px';
     buttonMinusRow.style.top = offTop + 'px';
 
+
 };
+
+function hiden() {
+    buttonMinusRow.style.visibility = "hidden";
+    buttonMinusCol.style.visibility = "hidden";
+}
 
 // Удаляет колонку
 buttonMinusCol.onclick = function () {
@@ -70,7 +86,14 @@ buttonMinusCol.onclick = function () {
         var elemTD = mainTable.getElementsByTagName('tr')[i].getElementsByTagName('td')[indexCol];
         elemTD.remove();
     }
+
+    countChildElemen = mainTable.getElementsByTagName('tr')[0].lastElementChild.offsetLeft;
+
+    buttonMinusCol.style.left = countChildElemen + "px";
+
+    setTimeout(hiden(), 9999);
 };
+
 
 // Удаляет строчку
 buttonMinusRow.onclick = function () {
@@ -96,4 +119,18 @@ buttonPlusRow.onclick = function () {
     }
 };
 
+mainTable.onmouseover = buttonMinusRow.onmouseover = buttonMinusCol.onmouseover = over;
+
+function over() {
+    setTimeout(function () {
+        buttonMinusRow.style.visibility = "visible";
+        buttonMinusCol.style.visibility = "visible";
+    }, 4);
+};
+
+mainTable.onmouseout = buttonMinusRow.onmouseout = buttonMinusCol.onmouseout = out;
+
+function out() {
+    setTimeout(hiden(), 4);
+};
 
