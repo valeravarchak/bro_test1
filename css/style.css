@@ -29,11 +29,9 @@ td {
     font-weight: 900;
     line-height: 70px;
     text-align: center;
-    font-size: 30px;
+    font-size: 35px;
 }
-
-.minus_col,
-.minus_row {
+.minus {
     visibility: hidden;
 }
 
@@ -55,7 +53,6 @@ td {
     left: 100%;
     top: 0%;
     margin: 4px 2px;
-
 }
 
 .plus_row {
