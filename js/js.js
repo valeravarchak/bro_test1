@@ -1,147 +1,135 @@
+
 // Таблица
-var mainTable = document.getElementsByClassName("main_table")[0];
+const MAIN_TABLE = document.getElementsByClassName("main_table")[0];
 
 // Кнопка удаления ряда
-var buttonMinusRow = document.getElementsByClassName("minus_row")[0];
-
 // Кнопка удаления колонки
-var buttonMinusCol = document.getElementsByClassName("minus_col")[0];
+const MINUS_ROW = document.getElementsByClassName("minus_row")[0];
+const MINUS_COL = document.getElementsByClassName("minus_col")[0];
+
+
 
 // Кнопка добавления ряда
-var buttonPlusRow = document.getElementsByClassName("plus_row")[0];
-
 // Кнопка добавления колонки
-var buttonPlusCol = document.getElementsByClassName("plus_col")[0];
+const PLUS_ROW = document.getElementsByClassName("plus_row")[0];
+const PLUS_COL = document.getElementsByClassName("plus_col")[0];
+
+// масив с кнопок удаления
+let arrButton = [MINUS_ROW,MINUS_COL];
 
 // Время скрития кнопок удаления
-var timeHiddenButtons;
+let timeHiddenButtons;
 
 // Индекс колонки
 //  Индекс ряда
-var indexCol;
-var indexRow;
-
-// Количество рядов
-// Количество ячеек в ряде
-var countOfRows;
-var countChildElement;
+let indexCol;
+let indexRow;
 
 // При загрузке страницы создаёт таблицу 4х4
-window.onload = function () {
+window.onload = () => {
     hiddenMinusButtons();
 
-    for (var i = 0; i < 4; i++) {
-        mainTable.appendChild(document.createElement('tr'));
+    for (let i = 0; i < 4; i++) {
+        let insRow = MAIN_TABLE.insertRow(i);
 
-        for (var j = 0; j < 4; j++) {
-            document.getElementsByTagName('tr')[i].appendChild(document.createElement('td'));
+        for (let j = 0; j < 4; j++) {
+            insRow.insertCell(j);
         }
     }
 
 };
 
-document.onmouseover = function () {
-    countOfRows = mainTable.getElementsByTagName('tr').length;
-    countChildElement = mainTable.getElementsByTagName('tr')[0].getElementsByTagName('td').length;
+// Показывает кнопки удаления
+visibleMinusButtons = () => {
+    if (MAIN_TABLE.rows.length !== 1) {
+        MINUS_ROW.style.visibility = "visible";
+    }
+    if (MAIN_TABLE.rows[0].cells.length !== 1) {
+        MINUS_COL.style.visibility = "visible";
+    }
+};
+
+// Cкрывает кнопки удаления
+hiddenMinusButtons = () => {
+    MINUS_ROW.style.visibility = 'hidden';
+    MINUS_COL.style.visibility = 'hidden';
 }
 
-mainTable.onmouseover = function (event) {
+
+MAIN_TABLE.onmouseover = (event) => {
     clearTimeout(timeHiddenButtons);
 
     visibleMinusButtons();
 
-    var target = event.target;
+    let target = event.target;
 
     // Если не наведено ячейку прекращает функцию
-    if (target.tagName != 'TD') return;
+    if (target.tagName !== 'TD') return;
 
     // Запись индекса колонки
     // Запись индекса ряда
     indexCol = target.cellIndex;
     indexRow = target.parentNode.rowIndex;
 
-    buttonMinusCol.style.left = target.offsetLeft + 'px';
-    buttonMinusRow.style.top = target.offsetTop + 'px';
+    MINUS_COL.style.left = `${target.offsetLeft}px`;
+    MINUS_ROW.style.top = `${target.offsetTop}px`;
 
-};
-
-// Удаляет колонку
-buttonMinusCol.onclick = function () {
-    countChildElement = mainTable.getElementsByTagName('tr')[0].getElementsByTagName('td').length;
-
-    if (countChildElement != 1) {
-        for (var i = 0; i < countOfRows; i++) {
-            var elemTD = mainTable.getElementsByTagName('tr')[i].getElementsByTagName('td')[indexCol];
-            elemTD.remove();
-        }
-    }
-    hiddenMinusButtons();
-
-    buttonMinusCol.style.left = mainTable.getElementsByTagName('tr')[0].lastElementChild.offsetLeft + 'px';
-};
-
-// Удаляет ряд
-buttonMinusRow.onclick = function () {
-    countOfRows = mainTable.getElementsByTagName('tr').length;
-
-    if (countOfRows != 1) {
-        var elemTR = mainTable.getElementsByTagName('tr')[indexRow];
-        elemTR.remove();
-    }
-    hiddenMinusButtons();
-
-    buttonMinusRow.style.top = mainTable.lastElementChild.offsetTop + 'px';
 };
 
 // Добавляет колонку
-buttonPlusCol.onclick = function () {
+PLUS_COL.onclick = () => {
 
-    for (var i = 0; i < countOfRows; i++) {
-        document.getElementsByTagName('tr')[i].appendChild(document.createElement('td'));
+    for (let col of MAIN_TABLE.rows) {
+      col.insertCell();
     }
 };
 
 // Добавляет строчку
-buttonPlusRow.onclick = function () {
-    mainTable.appendChild(document.createElement('tr'));
-    for (var i = 0; i < countChildElement; i++) {
-        document.getElementsByTagName('tr')[countOfRows].appendChild(document.createElement('td'));
+PLUS_ROW.onclick = () => {
+    MAIN_TABLE.insertRow();
+    for (let row of MAIN_TABLE.rows[0].cells) {
+        MAIN_TABLE.rows[MAIN_TABLE.rows.length - 1].insertCell(row);
     }
 };
 
-// Показывает кнопки удаления
-function visibleMinusButtons() {
-    if (countOfRows != 1) {
-        buttonMinusRow.style.visibility = "visible";
-    }
-    if (countChildElement != 1) {
-        buttonMinusCol.style.visibility = "visible";
+// Удаляет колонку
+MINUS_COL.onclick = () => {
+
+    if (MAIN_TABLE.rows[0].cells.length !== 1) {
+        for (let col of MAIN_TABLE.rows) {
+            col.deleteCell(indexCol);
+        }
+
+        MINUS_COL.style.left = `${MAIN_TABLE.rows[0].lastElementChild.offsetLeft}px`;
+        hiddenMinusButtons();
     }
 };
 
-// Cкрывает кнопки удаления
-function hiddenMinusButtons() {
-    buttonMinusRow.style.visibility = "hidden";
-    buttonMinusCol.style.visibility = "hidden";
-}
+// Удаляет ряд
+MINUS_ROW.onclick = () => {
 
-buttonMinusCol.onmouseover = function () {
-    clearTimeout(timeHiddenButtons);
-}
+    if (MAIN_TABLE.rows.length !== 1) {
+        MAIN_TABLE.deleteRow(indexRow);
 
-buttonMinusCol.onmouseout = function () {
-    timeHiddenButtons = setTimeout(hiddenMinusButtons, 100);
-}
-
-buttonMinusRow.onmouseover = function () {
-    clearTimeout(timeHiddenButtons);
-}
-
-buttonMinusRow.onmouseout = function () {
-    timeHiddenButtons = setTimeout(hiddenMinusButtons, 100);
-}
+        MINUS_ROW.style.top = `${MAIN_TABLE.rows[MAIN_TABLE.rows.length -1].offsetTop}px`;
+        hiddenMinusButtons();
+    }
+};
 
 // Если не наведено на таблицу скривает кнопки удаления
-mainTable.onmouseout = function () {
-    timeHiddenButtons = setTimeout(hiddenMinusButtons, 100);
+MAIN_TABLE.onmouseout = () => {
+    timeHiddenButtons = setTimeout(hiddenMinusButtons, 1000);
+}
+
+// Отменяет скривание кнопок
+for(let but in arrButton){
+    arrButton[but].onmouseover = () => {
+        clearTimeout(timeHiddenButtons);
+    }
+}
+// скривает кнопки при уведении с них
+for(let but in arrButton){
+    arrButton[but].onmouseout = () => {
+        timeHiddenButtons = setTimeout(hiddenMinusButtons, 1000);
+    }
 }
