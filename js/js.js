@@ -7,15 +7,13 @@ const MAIN_TABLE = document.getElementsByClassName("main_table")[0];
 const MINUS_ROW = document.getElementsByClassName("minus_row")[0];
 const MINUS_COL = document.getElementsByClassName("minus_col")[0];
 
-
+// Блок в котором находятся таблица и кнопки
+const CONTENT = document.getElementsByClassName("content")[0];
 
 // Кнопка добавления ряда
 // Кнопка добавления колонки
 const PLUS_ROW = document.getElementsByClassName("plus_row")[0];
 const PLUS_COL = document.getElementsByClassName("plus_col")[0];
-
-// масив с кнопок удаления
-let arrButton = [MINUS_ROW,MINUS_COL];
 
 // Время скрития кнопок удаления
 let timeHiddenButtons;
@@ -53,7 +51,7 @@ visibleMinusButtons = () => {
 hiddenMinusButtons = () => {
     MINUS_ROW.style.visibility = 'hidden';
     MINUS_COL.style.visibility = 'hidden';
-}
+};
 
 
 MAIN_TABLE.onmouseover = (event) => {
@@ -80,7 +78,7 @@ MAIN_TABLE.onmouseover = (event) => {
 PLUS_COL.onclick = () => {
 
     for (let col of MAIN_TABLE.rows) {
-      col.insertCell();
+        col.insertCell();
     }
 };
 
@@ -111,25 +109,22 @@ MINUS_ROW.onclick = () => {
     if (MAIN_TABLE.rows.length !== 1) {
         MAIN_TABLE.deleteRow(indexRow);
 
-        MINUS_ROW.style.top = `${MAIN_TABLE.rows[MAIN_TABLE.rows.length -1].offsetTop}px`;
+        MINUS_ROW.style.top = `${MAIN_TABLE.rows[MAIN_TABLE.rows.length - 1].offsetTop}px`;
         hiddenMinusButtons();
     }
 };
 
-// Если не наведено на таблицу скривает кнопки удаления
-MAIN_TABLE.onmouseout = () => {
-    timeHiddenButtons = setTimeout(hiddenMinusButtons, 1000);
-}
 
-// Отменяет скривание кнопок
-for(let but in arrButton){
-    arrButton[but].onmouseover = () => {
-        clearTimeout(timeHiddenButtons);
-    }
-}
-// скривает кнопки при уведении с них
-for(let but in arrButton){
-    arrButton[but].onmouseout = () => {
-        timeHiddenButtons = setTimeout(hiddenMinusButtons, 1000);
-    }
-}
+// Если не наведено на таблицу скривает кнопки удаления
+CONTENT.onmouseout = () => {
+    timeHiddenButtons = setTimeout(hiddenMinusButtons, 1000);
+};
+
+CONTENT.onmouseover = (event) => {
+
+    let target = event.target
+
+    if (target.classList[1] !== "minus") return;
+
+    clearTimeout(timeHiddenButtons);
+};
